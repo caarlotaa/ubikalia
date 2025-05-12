@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubikalia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #19456b;
+            --secondary: #16c79a;
+            --accent: #6fe7c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --highlight: #3c7cb9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 5px;
+            margin-right: 20px;
+        }
+
+        .lang-option {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--highlight);
+            color: white;
+            border: 2px solid var(--highlight);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+            border: 2px solid var(--secondary);
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background-color: #119b7d;
+            border-color: #119b7d;
+            transform: translateY(-2px);
+        }
+
+        .search-btn {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: 2px solid var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-btn:hover {
+            background-color: transparent;
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Hero section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 180px 0 100px;
+            text-align: center;
+            margin-top: 60px;
+            transition: background-image 1s ease-in-out;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        /* Search form */
+        .search-form {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            max-width: 800px;
+            margin: 30px auto 0;
+            flex-wrap: wrap;
+        }
+
+        .search-form .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-form select,
+        .search-form input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: transform 0.3s;
+        }
+
+        .search-form select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2319456b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 12px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 45px;
+        }
+
+        .search-form button[type="submit"] {
+            min-width: 200px;
+            padding: 15px 30px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Categories section - Mejoras 3D */
+        .categories {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .categories h3 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            position: relative;
+            height: 220px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .category-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            transition: transform 0.5s ease;
+        }
+
+        .category-card:hover .category-bg {
+            transform: scale(1.05);
+        }
+
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(25, 69, 107, 0.7);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+            transform: translateZ(20px);
+        }
+
+        .category-card:hover .category-overlay {
+            background: rgba(22, 199, 154, 0.8);
+            transform: translateZ(30px);
+        }
+
+        .category-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .category-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .category-card h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .category-card p {
+            font-size: 1rem;
+            margin-top: 15px;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        .category-card p::after {
+            content: '→';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .category-card:hover p::after {
+            transform: translate(5px, -50%);
+        }
+
+        /* How it works */
+        .how-it-works {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .how-it-works h3 {
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+
+        .step h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        /* Testimonials - Mejoras de compartir */
+        .testimonials {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .testimonials h3 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .testimonial-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .testimonial-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-weight: bold;
+            color: var(--gray);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .testimonial-tab.active {
+            color: var(--secondary);
+        }
+
+        .testimonial-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--secondary);
+        }
+
+        .testimonial-group {
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .testimonial-group[data-type="client"],
+        .testimonial-group[data-type="owner"] {
+            display: block;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .user-meta {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .rating {
+            color: #f8c51a;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .share-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .favorite-btn .fas {
+            color: #ff4757;
+        }
+
+        /* Become Host */
+        .become-host {
+            padding: 100px 0;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .become-host h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .become-host p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-main {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                margin: 20px 0;
+            }
+
+            .hero {
+                padding: 150px 0 80px;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-form button[type="submit"] {
+                width: 100%;
+            }
+
+            .steps {
+                flex-direction: column;
+            }
+
+            .testimonial-tabs {
+                flex-wrap: wrap;
+            }
+
+            .logo {
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+
+            .auth-buttons {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-card {
+                height: 180px;
+            }
+            
+            .category-card h4 {
+                font-size: 1.2rem;
+            }
+            
+            .category-card p {
+                font-size: 0.9rem;
+            }
+            
+            .testimonial-card {
+                padding: 15px;
+            }
+            
+            .steps {
+                gap: 15px;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="language-switcher">
+                    <button class="lang-option active" data-lang="es">ES</button>
+                    <button class="lang-option" data-lang="en">EN</button>
+                </div>
+                <div class="auth-buttons">
+                    <a href="#" class="btn btn-outline">Iniciar sesión</a>
+                    <a href="#" class="btn btn-primary">Registrarse</a>
+                </div>
+            </div>
+            <div class="header-main">
+                <a href="index.html" class="logo">
+                    <img src="images/ubikalia_logo.png" alt="Ubikalia" class="logo-img">
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero" id="hero">
+        <div class="container">
+            <h2>Encuentra el espacio perfecto para tu evento</h2>
+            <p>Conectamos propietarios de espacios únicos con personas que necesitan lugares especiales para sus eventos.</p>
+            <form id="searchForm" class="search-form" action="search.html" method="get">
+                <div class="form-group">
+                    <select name="type" id="eventType" required
+                            aria-label="Selecciona el tipo de evento"
+                            aria-describedby="typeError">
+                        <option value="">¿Qué evento quieres celebrar?</option>
+                        <option value="fiesta">Fiesta privada o celebración</option>
+                        <option value="corporativo">Reunión o evento corporativo</option>
+                        <option value="taller">Taller o curso formativo</option>
+                        <option value="rodaje">Rodaje o producción audiovisual</option>
+                        <option value="boda">Boda o evento nupcial</option>
+                        <option value="fotos">Sesión fotográfica</option>
+                    </select>
+                    <div id="typeError" class="error-message">Por favor selecciona un tipo de evento</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="location" id="location" 
+                           placeholder="¿Dónde lo necesitas?" 
+                           required
+                           aria-label="Ubicación del evento"
+                           aria-describedby="locationError">
+                    <div id="locationError" class="error-message">Por favor introduce una ubicación</div>
+                </div>
+                <button type="submit" class="btn search-btn">BUSCAR ESPACIOS</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <h3>Descubre espacios para...</h3>
+            <div class="category-grid">
+                <div class="category-card" data-type="fiesta" style="background-image: url('https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Fiestas</h4>
+                            <p>Celebra momentos inolvidables →</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card" data-type="corporativo" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Corporativos</h4>
+                            <p>Impulsa tus reuniones profesionales →</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card" data-type="taller" style="background-image: url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Talleres</h4>
+                            <p>Espacios que inspiran aprendizaje →</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card" data-type="rodaje" style="background-image: url('https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Rodajes</h4>
+                            <p>Locaciones con carácter →</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card" data-type="boda" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Bodas</h4>
+                            <p>El escenario de tus sueños →</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card" data-type="fotos" style="background-image: url('https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="category-bg"></div>
+                    <div class="category-overlay">
+                        <div class="category-content">
+                            <h4>Fotografía</h4>
+                            <p>Marco perfecto para tus imágenes →</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <h3>¿Cómo funciona Ubikalia?</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Encuentra tu espacio</h4>
+                    <p>Busca entre cientos de espacios únicos en toda España.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Reserva fácilmente</h4>
+                    <p>Reserva online con total seguridad y garantía.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Disfruta tu evento</h4>
+                    <p>Celebra tu evento en un espacio perfecto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h3>Lo que dicen nuestros usuarios</h3>
+            
+            <div class="testimonial-tabs">
+                <button class="testimonial-tab active" data-type="all">Todos</button>
+                <button class="testimonial-tab" data-type="client">Clientes</button>
+                <button class="testimonial-tab" data-type="owner">Propietarios</button>
+            </div>
+
+            <div class="testimonial-group" data-type="client">
+                <h4>Clientes que alquilan espacios</h4>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <button class="favorite-btn" aria-label="Añadir a favoritos">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="user-info">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Cliente">
+                            <div>
+                                <h5>Ana, 28 años</h5>
+                                <p class="user-meta">Celebró su boda en Sevilla</p>
+                            </div>
+                        </div>
+                        <div class="rating">★★★★★</div>
+                        <p>"Encontramos el jardín perfecto para nuestra boda a través de Ubikalia. El proceso fue súper fácil y el dueño muy profesional."</p>
+                        <div class="testimonial-actions">
+                            <button class="share-btn" aria-label="Compartir en Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button class="share-btn" aria-label="Compartir en Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <button class="favorite-btn" aria-label="Añadir a favoritos">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="user-info">
+                            <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="Cliente">
+                            <div>
+                                <h5>Carlos, 42 años</h5>
+                                <p class="user-meta">Organizó evento corporativo</p>
+                            </div>
+                        </div>
+                        <div class="rating">★★★★☆</div>
+                        <p>"Como organizador de eventos, valoro mucho la variedad de espacios profesionales que ofrece Ubikalia. Siempre encuentro lo que necesito."</p>
+                        <div class="testimonial-actions">
+                            <button class="share-btn" aria-label="Compartir en Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button class="share-btn" aria-label="Compartir en Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-group" data-type="owner">
+                <h4>Propietarios de espacios</h4>
+                <div class="testimonial-grid">
+                    <div class="testimonial-card">
+                        <button class="favorite-btn" aria-label="Añadir a favoritos">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="user-info">
+                            <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Propietario">
+                            <div>
+                                <h5>Diego, 35 años</h5>
+                                <p class="user-meta">Dueño de local en Valdepeñas</p>
+                            </div>
+                        </div>
+                        <div class="rating">★★★★★</div>
+                        <p>"Ubikalia me ha permitido rentabilizar mi local los días que no lo uso. La plataforma es intuitiva y los clientes siempre respetuosos."</p>
+                        <div class="testimonial-actions">
+                            <button class="share-btn" aria-label="Compartir en Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button class="share-btn" aria-label="Compartir en Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card">
+                        <button class="favorite-btn" aria-label="Añadir a favoritos">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="user-info">
+                            <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="Propietario">
+                            <div>
+                                <h5>Laura, 29 años</h5>
+                                <p class="user-meta">Alquila su terraza en Madrid</p>
+                            </div>
+                        </div>
+                        <div class="rating">★★★★☆</div>
+                        <p>"Alquilar mi terraza los fines de semana me da un ingreso extra sin esfuerzo. La app es muy fácil de usar y el soporte excelente."</p>
+                        <div class="testimonial-actions">
+                            <button class="share-btn" aria-label="Compartir en Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button class="share-btn" aria-label="Compartir en Facebook">
+                                <i class="fab fa-facebook"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="become-host">
+        <div class="container">
+            <h3>¿Tienes un espacio disponible?</h3>
+            <p>Forma parte de nuestra comunidad y genera ingresos con ese espacio que no utilizas</p>
+            <a href="host.html" class="btn btn-secondary">PUBLICA TU ESPACIO</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Ubikalia</h4>
+                    <p>Un espacio para tus ideas</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Enlaces</h4>
+                    <ul>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Síguenos</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Ubikalia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Selector de idiomas
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Aquí iría la lógica para cambiar el idioma
+                console.log('Idioma cambiado a:', this.dataset.lang);
+            });
+        });
+                // Fondo dinámico para el hero
+                const heroImages = [
+            'https://images.unsplash.com/photo-1556760544-74068565f05c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+            'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+            'https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+            'https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+        ];
+
+        const heroSection = document.getElementById('hero');
+        let currentImage = 0;
+
+        function changeHeroImage() {
+            currentImage = (currentImage + 1) % heroImages.length;
+            heroSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${heroImages[currentImage]}')`;
+        }
+
+        // Cambiar imagen cada 5 segundos
+        setInterval(changeHeroImage, 5000);
+        // Iniciar con la primera imagen
+        changeHeroImage();
+
+        // Validación del formulario de búsqueda (en tiempo real)
+        const searchForm = document.getElementById('searchForm');
+        const eventType = document.getElementById('eventType');
+        const locationInput = document.getElementById('location');
+        const typeError = document.getElementById('typeError');
+        const locationError = document.getElementById('locationError');
+
+        // Validación en tiempo real
+        eventType.addEventListener('change', function() {
+            if (this.value) {
+                typeError.style.display = 'none';
+            }
+        });
+
+        locationInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                locationError.style.display = 'none';
+            }
+        });
+
+        // Validación al enviar
+        searchForm.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            if (!eventType.value) {
+                typeError.style.display = 'block';
+                isValid = false;
+            } else {
+                typeError.style.display = 'none';
+            }
+            
+            if (!locationInput.value.trim()) {
+                locationError.style.display = 'block';
+                isValid = false;
+            } else {
+                locationError.style.display = 'none';
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll al primer error
+                const firstError = document.querySelector('.error-message[style="display: block;"]');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Selección de categoría con animación
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                const eventTypeSelect = document.getElementById('eventType');
+                
+                // Animación de selección
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+                
+                eventTypeSelect.value = type;
+                typeError.style.display = 'none';
+                
+                // Scroll suave al formulario
+                document.querySelector('.search-form').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // Efecto hover para las flechas
+            card.addEventListener('mouseenter', function() {
+                const p = this.querySelector('p');
+                if (p) p.style.paddingRight = '25px';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const p = this.querySelector('p');
+                if (p) p.style.paddingRight = '20px';
+            });
+        });
+
+        // Sistema de pestañas de testimonios
+        document.querySelectorAll('.testimonial-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.testimonial-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const type = this.dataset.type;
+                document.querySelectorAll('.testimonial-group').forEach(group => {
+                    group.style.display = (type === 'all' || group.dataset.type === type) ? 'block' : 'none';
+                });
+            });
+        });
+
+        // Sistema de favoritos
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            // Cargar favoritos guardados
+            const testimonialId = btn.closest('.testimonial-card').querySelector('h5').textContent;
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            
+            if (favorites.includes(testimonialId)) {
+                btn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+            
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const testimonialId = this.closest('.testimonial-card').querySelector('h5').textContent;
+                let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                
+                if (icon.classList.contains('far')) {
+                    // Añadir a favoritos
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    favorites.push(testimonialId);
+                } else {
+                    // Quitar de favoritos
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    favorites = favorites.filter(id => id !== testimonialId);
+                }
+                
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                
+                // Pequeña animación
+                this.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+
+        // Sistema de compartir
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const testimonialCard = this.closest('.testimonial-card');
+                const userName = testimonialCard.querySelector('h5').textContent;
+                const userComment = testimonialCard.querySelector('p').textContent;
+                const platform = this.querySelector('i').classList.contains('fa-twitter') ? 'twitter' : 'facebook';
+                
+                let shareUrl = '';
+                const text = `"${userComment}" - ${userName} via @Ubikalia`;
+                
+                if (platform === 'twitter') {
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                } else {
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`;
+                }
+                
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+                
+                // Animación al compartir
+                this.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 300);
+            });
+        });
+
+        // Smooth scrolling para todos los enlaces
+        document.querySelectorAll('a[href^="#"], a[href^="/"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                // Solo manejar enlaces internos
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Mejora de accesibilidad: focus visible
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'Tab') {
+                document.documentElement.classList.add('keyboard-focus');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.documentElement.classList.remove('keyboard-focus');
+        });
+
+        // Precarga de imágenes para mejor rendimiento
+        window.addEventListener('load', function() {
+            heroImages.forEach(img => {
+                (new Image()).src = img;
+            });
+        });
+    </script>
+</body>
+</html>

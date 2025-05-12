@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros | Ubikalia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #19456b;
+            --secondary: #16c79a;
+            --accent: #6fe7c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --highlight: #3c7cb9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 5px;
+            margin-right: 20px;
+        }
+
+        .lang-option {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--highlight);
+            color: white;
+            border: 2px solid var(--highlight);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Hero section */
+        .about-hero {
+            background: linear-gradient(rgba(25, 69, 107, 0.8), rgba(25, 69, 107, 0.8)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 180px 0 100px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .about-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        /* About content */
+        .about-content {
+            padding: 80px 0;
+        }
+
+        .about-section {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+
+        .about-section.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-content h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .about-content p {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        /* Team section */
+        .team {
+            padding: 60px 0;
+            background-color: var(--light);
+            text-align: center;
+        }
+
+        .team h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 40px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .team-member {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 5px solid var(--accent);
+        }
+
+        .team-member h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .team-member p.position {
+            color: var(--secondary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: var(--primary);
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+        }
+
+        /* Values section */
+        .values {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .values h2 {
+            color: var(--primary);
+            margin-bottom: 40px;
+            font-size: 2rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .value-card {
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .value-card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* CTA Section */
+        .about-cta {
+            padding: 100px 0;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .about-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .about-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent);
+        }
+
+        .footer-social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .footer-social-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-main {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                margin: 20px 0;
+            }
+
+            .about-hero {
+                padding: 150px 0 80px;
+            }
+
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+
+            .about-section {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .logo {
+                justify-content: center;
+                margin-bottom: 15px;
+            }
+
+            .auth-buttons {
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-hero {
+                padding: 120px 0 60px;
+            }
+            
+            .team-member {
+                padding: 20px;
+            }
+            
+            .value-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="language-switcher">
+                    <button class="lang-option active" data-lang="es">ES</button>
+                    <button class="lang-option" data-lang="en">EN</button>
+                </div>
+                <div class="auth-buttons">
+                    <a href="#" class="btn btn-outline">Iniciar sesión</a>
+                    <a href="#" class="btn btn-primary">Registrarse</a>
+                </div>
+            </div>
+            <div class="header-main">
+                <a href="index.html" class="logo">
+                    <img src="images/ubikalia_logo.png" alt="Ubikalia" class="logo-img">
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>Nuestra historia y valores</h1>
+            <p>Conoce más sobre nuestra misión, visión y el equipo detrás de Ubikalia</p>
+        </div>
+    </section>
+
+    <section class="about-content">
+        <div class="container">
+            <div class="about-section">
+                <div class="about-text">
+                    <h2>Nuestra historia</h2>
+                    <p>Ubikalia nació en 2025 como un proyecto de un grupo de ingenieros que identificaron la necesidad de conectar espacios únicos con personas que buscan lugares especiales para sus eventos. Lo que comenzó como un proyecto universitario en Toledo, hoy se ha convertido en una plataforma nacional con cientos de espacios disponibles en toda España.</p>
+                    <p>Nuestro objetivo es simple: facilitar el proceso de encontrar y reservar espacios para eventos, mientras ayudamos a los propietarios a rentabilizar sus propiedades infrautilizadas.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/reunion.jpeg" alt="Ubikalia Team">
+                </div>
+            </div>
+
+            <div class="about-section reverse">
+                <div class="about-text">
+                    <h2>Nuestra misión</h2>
+                    <p>Creemos que cada evento merece un espacio perfecto, y cada espacio merece ser aprovechado al máximo. Por eso trabajamos para crear una comunidad donde propietarios y organizadores de eventos puedan conectarse de manera sencilla, segura y confiable.</p>
+                    <p>Nos esforzamos por ofrecer una experiencia de usuario excepcional, con herramientas intuitivas y un servicio al cliente dedicado que está disponible para ayudarte en cada paso del proceso.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/nuestra_mision.png" alt="Reunión de equipo">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="team">
+        <div class="container">
+            <h2>Conoce a nuestro equipo</h2>
+            <div class="team-name">Ácido y Alurónico</div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="images/alexis.jpeg" alt="Alexis Albín">
+                    <h3>Alexis Albín</h3>
+                    <p class="position">CEO & Fundador</p>
+                    <p>Líder con experiencia emprendimiento y conocimientos financieros</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/carlota.jpeg" alt="Carlota Alcubilla">
+                    <h3>Carlota Alcubilla</h3>
+                    <p class="position">CTO</p>
+                    <p>Experta en arquitectura de software y soluciones tecnológicas escalables</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/daniel.png" alt="Daniel Gascón">
+                    <h3>Daniel Gascón</h3>
+                    <p class="position">Director de Marketing</p>
+                    <p>Estratega de crecimiento de marca y desarrollo de comunidades</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="team-member">
+                    <img src="images/meriem2.jpeg" alt="Meriem Baida">
+                    <h3>Meriem Baida</h3>
+                    <p class="position">Directora de Diseño</p>
+                    <p>Especialista en experiencia de usuario e interfaces intuitivas</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Behance"><i class="fab fa-behance"></i></a>
+                    </div>
+                </div>
+                
+
+                <div class="team-member">
+                    <img src="images/illie.jpeg" alt="Ilie Alexandru Revnic">
+                    <h3>Ilie Alexandru</h3>
+                    <p class="position">Director de Operaciones</p>
+                    <p>Experto en optimización de procesos y experiencia del cliente</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/juan.jpeg" alt="Juan Ruiz">
+                    <h3>Juan Ruiz</h3>
+                    <p class="position">Responsable Comercial</p>
+                    <p>Especialista en desarrollo de negocio y relaciones con partners</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+          
+        
+    </section>
+
+    <section class="about-cta">
+        <div class="container">
+            <h2>¿Listo para unirte a nuestra comunidad?</h2>
+            <p>Ya sea que necesites un espacio para tu evento o quieras rentabilizar tu propiedad, Ubikalia es la plataforma perfecta para ti.</p>
+            <a href="search.html" class="btn btn-outline" style="color: white; border-color: white;">Buscar espacios</a>
+            <a href="host.html" class="btn btn-primary">Ofrecer espacio</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Ubikalia</h4>
+                    <p>Un espacio para tus ideas</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Enlaces</h4>
+                    <ul>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Síguenos</h4>
+                    <div class="footer-social-links">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Ubikalia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Selector de idiomas
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Aquí iría la lógica para cambiar el idioma
+                console.log('Idioma cambiado a:', this.dataset.lang);
+            });
+        });
+
+        // Smooth scrolling para todos los enlaces
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animación para las imágenes al aparecer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.about-image, .team-member, .value-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Mejora de accesibilidad: focus visible
+        document.addEventListener('keyup', function(e) {
+            if (e.key === 'Tab') {
+                document.documentElement.classList.add('keyboard-focus');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.documentElement.classList.remove('keyboard-focus');
+        });
+    </script>
+</body>
+</html>

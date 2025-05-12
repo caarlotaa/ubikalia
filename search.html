@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar espacios | Ubikalia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+    <style>
+        :root {
+            --primary: #19456b;
+            --secondary: #16c79a;
+            --accent: #6fe7c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --highlight: #3c7cb9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .header-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 5px;
+            margin-right: 20px;
+        }
+
+        .lang-option {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-option.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 1rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--highlight);
+            color: white;
+            border: 2px solid var(--highlight);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+            border: 2px solid var(--secondary);
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background-color: #119b7d;
+            border-color: #119b7d;
+            transform: translateY(-2px);
+        }
+
+        .search-btn {
+            background-color: var(--accent);
+            color: var(--primary);
+            border: 2px solid var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-btn:hover {
+            background-color: transparent;
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 80px;
+            min-height: calc(100vh - 160px);
+        }
+        
+        .filters-sidebar {
+            flex: 0 0 300px;
+            background: white;
+            padding: 25px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            max-height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px;
+        }
+        
+        .search-results {
+            flex: 1;
+            padding: 25px;
+            min-width: 300px;
+        }
+        
+        .map-container {
+            height: 400px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        #resultsMap {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-count {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .sort-options select {
+            padding: 8px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .space-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .space-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .space-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .space-price {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .space-details {
+            padding: 20px;
+        }
+        
+        .space-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .space-location {
+            color: var(--gray);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .space-features {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+        }
+        
+        .view-space {
+            display: inline-block;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .view-space:hover {
+            background: var(--primary);
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 15px;
+        }
+        
+        .filter-section h4 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .price-range {
+            width: 100%;
+        }
+        
+        .price-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-tag {
+            background: var(--secondary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .filter-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+        
+        .map-popup .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .map-popup .leaflet-popup-content {
+            margin: 0;
+            width: 250px !important;
+        }
+        
+        .popup-image {
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .popup-content {
+            padding: 10px;
+        }
+        
+        .popup-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .popup-price {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .popup-link {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: var(--secondary);
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .filters-sidebar {
+                flex: 1;
+                position: static;
+                max-height: none;
+                box-shadow: none;
+                border-bottom: 1px solid var(--light-gray);
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+        
+        /* Estilos para el modal de detalles */
+            .space-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.8);
+                z-index: 2000;
+                overflow-y: auto;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            .modal-content {
+                background-color: white;
+                max-width: 800px;
+                margin: 40px auto;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .modal-header {
+                position: relative;
+                height: 300px;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: rgba(0,0,0,0.7);
+                color: white;
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .modal-body {
+                padding: 30px;
+            }
+
+            .modal-title {
+                font-size: 1.8rem;
+                color: var(--primary);
+                margin-bottom: 10px;
+            }
+
+            .modal-location {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: var(--gray);
+                margin-bottom: 20px;
+                font-size: 1.1rem;
+            }
+
+            .modal-price {
+                font-size: 1.5rem;
+                color: var(--secondary);
+                font-weight: 700;
+                margin-bottom: 20px;
+            }
+
+            .modal-features {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+
+            .feature-badge {
+                background-color: var(--light-gray);
+                padding: 8px 15px;
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 0.9rem;
+            }
+
+            .modal-section {
+                margin-bottom: 25px;
+            }
+
+            .modal-section h4 {
+                font-size: 1.3rem;
+                color: var(--primary);
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid var(--light-gray);
+            }
+
+            .modal-description {
+                line-height: 1.7;
+                color: var(--dark);
+            }
+
+            .modal-gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .gallery-thumb {
+                height: 100px;
+                background-size: cover;
+                background-position: center;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: transform 0.3s;
+            }
+
+            .gallery-thumb:hover {
+                transform: scale(1.05);
+            }
+
+            .modal-reviews {
+                margin-top: 30px;
+            }
+
+            .review-card {
+                background: var(--light-gray);
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+
+            .review-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .review-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: var(--accent);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                margin-right: 15px;
+            }
+
+            .review-rating {
+                color: #f8c51a;
+                margin-left: auto;
+            }
+
+            .review-date {
+                font-size: 0.8rem;
+                color: var(--gray);
+                margin-top: 5px;
+            }
+
+            .modal-actions {
+                display: flex;
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .modal-btn {
+                flex: 1;
+                padding: 12px;
+                text-align: center;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+            .btn-primary {
+                background: var(--secondary);
+                color: white;
+                border: none;
+            }
+
+            .btn-outline {
+                background: transparent;
+                border: 2px solid var(--secondary);
+                color: var(--secondary);
+            }
+
+            @media (max-width: 768px) {
+                .modal-content {
+                    margin: 20px auto;
+                }
+                
+                .modal-header {
+                    height: 200px;
+                }
+                
+                .modal-body {
+                    padding: 20px;  
+                }
+                
+                .modal-title {
+                    font-size: 1.5rem;
+                }
+                
+                .modal-actions {
+                    flex-direction: column;
+                }
+            }
+    
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent);
+        }
+
+        .footer-social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .footer-social-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="language-switcher">
+                    <button class="lang-option active" data-lang="es">ES</button>
+                    <button class="lang-option" data-lang="en">EN</button>
+                </div>
+                <div class="auth-buttons">
+                    <a href="#" class="btn btn-outline">Iniciar sesión</a>
+                    <a href="#" class="btn btn-primary">Registrarse</a>
+                </div>
+            </div>
+            <div class="header-main">
+                <a href="index.html" class="logo">
+                    <img src="images/ubikalia_logo.png" alt="Ubikalia" class="logo-img">
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <body>
+        <header>
+            <div class="container">
+                <div class="header-top">
+                    <div class="language-switcher">
+                        <button class="lang-option active" data-lang="es">ES</button>
+                        <button class="lang-option" data-lang="en">EN</button>
+                    </div>
+                    <div class="auth-buttons">
+                        <a href="#" class="btn btn-outline">Iniciar sesión</a>
+                        <a href="#" class="btn btn-primary">Registrarse</a>
+                    </div>
+                </div>
+                <div class="header-main">
+                    <a href="index.html" class="logo">
+                        <img src="images/ubikalia_logo.png" alt="Ubikalia" class="logo-img">
+                    </a>
+                    <nav>
+                        <ul>
+                            <li><a href="search.html">Ubica tu espacio</a></li>
+                            <li><a href="host.html">Ofrece tu espacio</a></li>
+                            <li><a href="about.html">Sobre nosotros</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+    <div class="search-container">
+        <!-- Sidebar de filtros -->
+        <aside class="filters-sidebar">
+            <h3>Filtrar resultados</h3>
+            
+            <div class="filter-section">
+                <h4>Ubicación</h4>
+                <div class="form-group">
+                    <input type="text" id="searchLocation" placeholder="Ciudad, dirección o código postal" class="full-width">
+                </div>
+                <button id="useCurrentLocation" class="btn btn-outline" style="margin-top: 10px; width: 100%;">
+                    <i class="fas fa-location-arrow"></i> Usar mi ubicación
+                </button>
+            </div>
+            
+            <div class="filter-section">
+                <h4>Tipo de espacio</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-fiesta" checked>
+                        <label for="type-fiesta">Fiesta privada</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-corporativo" checked>
+                        <label for="type-corporativo">Evento corporativo</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-taller" checked>
+                        <label for="type-taller">Taller/Curso</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-rodaje" checked>
+                        <label for="type-rodaje">Rodaje audiovisual</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-boda" checked>
+                        <label for="type-boda">Boda/Evento nupcial</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="type-fotos" checked>
+                        <label for="type-fotos">Sesión fotográfica</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h4>Precio por hora</h4>
+                <input type="range" id="priceRange" min="0" max="500" value="500" step="10" class="price-range">
+                <div class="price-values">
+                    <span>0€</span>
+                    <span id="maxPriceValue">500€</span>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h4>Capacidad</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="capacity-1" checked>
+                        <label for="capacity-1">1-10 personas</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="capacity-2" checked>
+                        <label for="capacity-2">11-30 personas</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="capacity-3" checked>
+                        <label for="capacity-3">31-50 personas</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="capacity-4" checked>
+                        <label for="capacity-4">+50 personas</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h4>Características</h4>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="feature-wifi">
+                        <label for="feature-wifi">Wi-Fi</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="feature-parking">
+                        <label for="feature-parking">Parking</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="feature-kitchen">
+                        <label for="feature-kitchen">Cocina</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="feature-ac">
+                        <label for="feature-ac">Aire acondicionado</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="applyFilters" class="btn btn-primary" style="width: 100%;">
+                Aplicar filtros
+            </button>
+        </aside>
+        
+        <!-- Resultados de búsqueda -->
+        <main class="search-results">
+            <div class="search-header">
+                <h3>Espacios disponibles</h3>
+                <div class="sort-options">
+                    <select id="sortBy">
+                        <option value="recommended">Recomendados</option>
+                        <option value="price-asc">Precio: menor a mayor</option>
+                        <option value="price-desc">Precio: mayor a menor</option>
+                        <option value="capacity">Capacidad</option>
+                        <option value="rating">Mejor valorados</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="active-filters" id="activeFilters"></div>
+            
+            <p class="results-count" id="resultsCount">Cargando espacios...</p>
+            
+            <div class="map-container">
+                <div id="resultsMap"></div>
+            </div>
+            
+            <div class="results-grid" id="spacesResults">
+                <!-- Los espacios se cargarán aquí con JavaScript -->
+            </div>
+        </main>
+        <!-- Modal de detalles del espacio -->
+<div id="spaceModal" class="space-modal">
+    <div class="modal-content">
+        <div class="modal-header" id="modalHeader">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <h3 class="modal-title" id="modalTitle"></h3>
+            <div class="modal-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="modalLocation"></span>
+            </div>
+            <div class="modal-price" id="modalPrice"></div>
+            
+            <div class="modal-features" id="modalFeatures"></div>
+            
+            <div class="modal-section">
+                <h4>Descripción</h4>
+                <p class="modal-description" id="modalDescription"></p>
+            </div>
+            
+            <div class="modal-section">
+                <h4>Galería</h4>
+                <div class="modal-gallery" id="modalGallery"></div>
+            </div>
+            
+            <div class="modal-section modal-reviews">
+                <h4>Valoraciones</h4>
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">A</div>
+                        <div>
+                            <strong>Ana Martínez</strong>
+                            <div class="review-date">15/06/2023</div>
+                        </div>
+                        <div class="review-rating">★★★★★</div>
+                    </div>
+                    <p>El espacio es exactamente como se ve en las fotos. Perfecto para nuestro evento corporativo.</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">C</div>
+                        <div>
+                            <strong>Carlos Ruiz</strong>
+                            <div class="review-date">02/05/2023</div>
+                        </div>
+                        <div class="review-rating">★★★★☆</div>
+                    </div>
+                    <p>Muy buen espacio aunque el acceso con equipos grandes fue un poco complicado.</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn btn-primary">Reservar ahora</button>
+                <button class="modal-btn btn-outline">Contactar al propietario</button>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Ubikalia</h4>
+                    <p>Un espacio para tus ideas</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Enlaces</h4>
+                    <ul>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Síguenos</h4>
+                    <div class="footer-social-links">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Ubikalia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Selector de idiomas
+        document.querySelectorAll('.lang-option').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.lang-option').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+        // Aquí iría la lógica para cambiar el idioma
+                console.log('Idioma cambiado a:', this.dataset.lang);
+            });
+        });
+
+        // Función para resetear datos
+        function resetLocalStorage() {
+            localStorage.removeItem('ubikalia-spaces');
+            location.reload();
+        }
+        // Datos de ejemplo (25 espacios en diferentes ciudades españolas)
+        const sampleSpaces = [
+            {
+                id: "1",
+                title: "Loft moderno en Malasaña",
+                type: "fiesta",
+                description: "Espacio diáfano perfecto para eventos sociales con terraza privada",
+                capacity: 30,
+                price: 65,
+                location: "Madrid, España",
+                coordinates: [40.4165, -3.7026],
+                image: "https://images.unsplash.com/photo-1662379940109-1026a0dcfe95?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGxvZnR8ZW58MHx8MHx8fDA%3D",
+                rating: "4.8",
+                size: 120,
+                features: ["wifi", "kitchen", "ac"],
+                createdAt: "2023-05-15T10:00:00Z"
+            },
+            {
+                id: "2",
+                title: "Jardín con piscina en Chamberí",
+                type: "evento",
+                description: "Precioso jardín con piscina ideal para celebraciones al aire libre",
+                capacity: 80,
+                price: 120,
+                location: "Madrid, España",
+                coordinates: [40.4350, -3.6965],
+                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.9",
+                size: 300,
+                features: ["parking", "kitchen"],
+                createdAt: "2023-06-20T11:30:00Z"
+            },
+            {
+                id: "3",
+                title: "Estudio fotográfico en Chueca",
+                type: "fotos",
+                description: "Estudio profesional con equipamiento de iluminación incluido",
+                capacity: 15,
+                price: 45,
+                location: "Madrid, España",
+                coordinates: [40.4225, -3.6958],
+                image: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.7",
+                size: 80,
+                features: ["wifi", "ac"],
+                createdAt: "2023-04-10T09:15:00Z"
+            },
+            {
+                id: "4",
+                title: "Oficina moderna en Barrio Salamanca",
+                type: "corporativo",
+                description: "Espacio profesional con equipamiento para reuniones y presentaciones",
+                capacity: 20,
+                price: 55,
+                location: "Madrid, España",
+                coordinates: [40.4320, -3.6850],
+                image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.6",
+                size: 100,
+                features: ["wifi", "ac", "parking"],
+                createdAt: "2023-07-05T14:20:00Z"
+            },
+            {
+                id: "5",
+                title: "Ático con vistas en Barcelona",
+                type: "fiesta",
+                description: "Espectacular ático con terraza y vistas a la ciudad",
+                capacity: 40,
+                price: 85,
+                location: "Barcelona, España",
+                coordinates: [41.3789, 2.1916],
+                image: "https://images.unsplash.com/photo-1707484687082-9493754d389f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.9",
+                size: 150,
+                features: ["wifi", "ac", "kitchen"],
+                createdAt: "2023-06-18T16:45:00Z"
+            },
+            {
+                id: "6",
+                title: "Palacio modernista para eventos",
+                type: "boda",
+                description: "Exclusivo palacio modernista con salones históricos",
+                capacity: 150,
+                price: 200,
+                location: "Barcelona, España",
+                coordinates: [41.4121, 2.0996],
+                image: "https://images.unsplash.com/photo-1688680436936-0175962af721?q=80&w=2084&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.9",
+                size: 500,
+                features: ["parking", "ac", "kitchen"],
+                createdAt: "2023-05-22T12:10:00Z"
+            },
+            {
+                id: "7",
+                title: "Casa en Panticosa",
+                type: "fiesta",
+                description: "Casa rural con encanto en el Pirineo aragonés",
+                capacity: 25,
+                price: 75,
+                location: "Huesca, España",
+                coordinates: [42.7236, -0.2846],
+                image: "https://images.unsplash.com/photo-1573652102907-b75d25910c11?q=80&w=2126&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.5",
+                size: 200,
+                features: ["parking"],
+                createdAt: "2023-07-12T10:30:00Z"
+            },
+            {
+                id: "8",
+                title: "Cortijo andaluz en Sevilla",
+                type: "boda",
+                description: "Típico cortijo andaluz con patio y jardines",
+                capacity: 100,
+                price: 150,
+                location: "Sevilla, España",
+                coordinates: [37.4165, -6.0713],
+                image: "https://images.unsplash.com/photo-1711249996254-194c70524603?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.8",
+                size: 400,
+                features: ["parking", "kitchen"],
+                createdAt: "2023-04-30T11:20:00Z"
+            },
+            {
+                id: "9",
+                title: "Finca en Córdoba",
+                type: "fiesta",
+                description: "Finca con sala de eventos y catering incluido",
+                capacity: 60,
+                price: 70,
+                location: "Códoba, España",
+                coordinates: [37.8916, -4.7727],
+                image: "https://images.unsplash.com/photo-1681038246005-b300835f0282?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.6",
+                size: 180,
+                features: ["wifi", "ac"],
+                createdAt: "2023-06-05T15:40:00Z"
+            },
+            {
+                id: "10",
+                title: "Casa con piscina en Valencia",
+                type: "fiesta",
+                description: "Casa con piscina y jardín para eventos",
+                capacity: 120,
+                price: 180,
+                location: "Valencia, España",
+                coordinates: [39.4622, -0.3720],
+                image: "https://images.unsplash.com/photo-1743112412074-107329677542?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.9",
+                size: 450,
+                features: ["parking", "ac", "kitchen"],
+                createdAt: "2023-05-10T12:00:00Z"
+            },
+            {
+                id: "11",
+                title: "Estudio creativo en Santiago",
+                type: "taller",
+                description: "Espacio luminoso ideal para talleres y cursos",
+                capacity: 25,
+                price: 50,
+                location: "Santiago de Compostela, España",
+                coordinates: [42.8782, -8.5417],
+                image: "https://images.unsplash.com/photo-1668438712649-ffd85f756de5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.7",
+                size: 90,
+                features: ["wifi", "ac"],
+                createdAt: "2023-07-08T09:30:00Z"
+            },
+            {
+                id: "12",
+                title: "Nave industrial en Zaragoza",
+                type: "rodaje",
+                description: "Amplia nave diáfana perfecta para producciones audiovisuales",
+                capacity: 30,
+                price: 60,
+                location: "Zaragoza, España",
+                coordinates: [41.6595605, -0.9066958],
+                image: "https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.5",
+                size: 250,
+                features: ["parking"],
+                createdAt: "2023-06-25T14:15:00Z"
+            },
+            {
+                id: "13",
+                title: "Cigarral en Toledo",
+                type: "boda",
+                description: "Encantadora hacienda toledana con capilla propia",
+                capacity: 80,
+                price: 130,
+                location: "Toledo, España",
+                coordinates: [39.8542857, -4.0329775],
+                image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.8",
+                size: 350,
+                features: ["parking", "kitchen"],
+                createdAt: "2023-05-28T10:45:00Z"
+            },
+            {
+                id: "14",
+                title: "Casa rural en Cuenca",
+                type: "taller",
+                description: "Acogedora casa rural con entorno natural para talleres",
+                capacity: 15,
+                price: 40,
+                location: "Cuenca, España",
+                coordinates: [40.0070, -2.0616],
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.7",
+                size: 120,
+                features: ["wifi", "kitchen"],
+                createdAt: "2023-07-15T08:20:00Z"
+            },
+            {
+                id: "15",
+                title: "Salas en Ciudad Real",
+                type: "corporativo",
+                description: "Elegantes y profesionales salas para eventos corporativos",
+                capacity: 50,
+                price: 90,
+                location: "Ciudad Real, España",
+                coordinates: [38.9905, -3.9323],
+                image: "https://images.unsplash.com/photo-1568992687947-868a62a9f521?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.6",
+                size: 200,
+                features: ["wifi", "ac", "parking"],
+                createdAt: "2023-06-10T11:10:00Z"
+            },
+            {
+                id: "16",
+                title: "Monasterio en Soria",
+                type: "boda",
+                description: "Antiguo monasterio reconvertido en espacio para bodas",
+                capacity: 70,
+                price: 110,
+                location: "Soria, España",
+                coordinates: [41.7615, -2.4584],
+                image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.8",
+                size: 300,
+                features: ["parking"],
+                createdAt: "2023-05-20T09:30:00Z"
+            },
+            {
+                id: "17",
+                title: "Casa de piedra en Huesca",
+                type: "taller",
+                description: "Auténtica casa de piedra en entorno natural para talleres",
+                capacity: 12,
+                price: 35,
+                location: "Huesca, España",
+                coordinates: [42.1362, -0.4087],
+                image: "https://images.unsplash.com/photo-1613310271953-b18bf33195fd?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.7",
+                size: 80,
+                features: ["kitchen"],
+                createdAt: "2023-07-01T10:00:00Z"
+            },
+            {
+                id: "18",
+                title: "Sala polivalente en Bilbao",
+                type: "fiesta",
+                description: "Sala versátil para todo tipo de eventos sociales",
+                capacity: 45,
+                price: 65,
+                location: "Bilbao, España",
+                coordinates: [43.2588, -2.9368],
+                image: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.6",
+                size: 150,
+                features: ["wifi", "ac"],
+                createdAt: "2023-06-15T14:30:00Z"
+            },
+            {
+                id: "19",
+                title: "Pazo en Asturias",
+                type: "boda",
+                description: "Preciosa finca en Villaviciosa para bodas inolvidables",
+                capacity: 90,
+                price: 140,
+                location: "Asturias, España",
+                coordinates: [43.4878, -5.42091],
+                image: "https://images.unsplash.com/photo-1597178248263-2dbeb246fc5f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                rating: "4.9",
+                size: 400,
+                features: ["parking", "kitchen"],
+                createdAt: "2023-05-25T12:15:00Z"
+        },
+        {
+            id: "20",
+            title: "Estudio de arte en Granada",
+            type: "fotos",
+            description: "Estudio con luz natural perfecto para sesiones fotográficas",
+            capacity: 10,
+            price: 40,
+            location: "Granada, España",
+            coordinates: [37.1773, -3.5986],
+            image: "https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.7",
+            size: 70,
+            features: ["wifi"],
+            createdAt: "2023-07-10T09:45:00Z"
+        },
+        {
+            id: "21",
+            title: "Palacio modernista en Valencia",
+            type: "corporativo",
+            description: "Impresionante palacio para eventos corporativos de alto nivel",
+            capacity: 100,
+            price: 160,
+            location: "Valencia, España",
+            coordinates: [39.4699, -0.3763],
+            image: "https://images.unsplash.com/photo-1560448204-603a4b3a3de2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.9",
+            size: 350,
+            features: ["wifi", "ac", "parking", "kitchen"],
+            createdAt: "2023-06-08T11:20:00Z"
+        },
+        {
+            id: "22",
+            title: "Loft industrial en Barcelona",
+            type: "rodaje",
+            description: "Espacio industrial con carácter para producciones audiovisuales",
+            capacity: 20,
+            price: 75,
+            location: "Barcelona, España",
+            coordinates: [41.3851, 2.1734],
+            image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.6",
+            size: 180,
+            features: ["wifi", "parking"],
+            createdAt: "2023-07-18T10:30:00Z"
+        },
+        {
+            id: "23",
+            title: "Casa señorial en Zaragoza",
+            type: "boda",
+            description: "Elegante casa señorial para bodas íntimas",
+            capacity: 60,
+            price: 110,
+            location: "Zaragoza, España",
+            coordinates: [41.6488, -0.8891],
+            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.8",
+            size: 250,
+            features: ["parking", "kitchen"],
+            createdAt: "2023-05-30T10:15:00Z"
+        },
+        {
+            id: "24",
+            title: "Sala de reuniones en Madrid",
+            type: "corporativo",
+            description: "Sala profesional equipada para reuniones y presentaciones",
+            capacity: 15,
+            price: 50,
+            location: "Madrid, España",
+            coordinates: [40.4168, -3.7038],
+            image: "https://images.unsplash.com/photo-1521747116042-5a810fda9664?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.5",
+            size: 60,
+            features: ["wifi", "ac"],
+            createdAt: "2023-07-05T14:00:00Z"
+        },
+        {
+            id: "25",
+            title: "Jardín botánico en Sevilla",
+            type: "boda",
+            description: "Precioso jardín botánico para ceremonias al aire libre",
+            capacity: 120,
+            price: 170,
+            location: "Sevilla, España",
+            coordinates: [37.3891, -5.9845],
+            image: "https://images.unsplash.com/photo-1584132967831-4d3acd12d3a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+            rating: "4.9",
+            size: 500,
+            features: ["parking", "kitchen"],
+            createdAt: "2023-06-22T11:45:00Z"
+        },
+        {
+                id: "26",
+                title: "Aula de la EIIA",
+                type: "rodaje",
+                description: "Aula de la EIIA, ideal para eventos y celebraciones",
+                capacity: 30,
+                price: 60,
+                location: "Toledo, España",
+                coordinates: [39.8648989, -4.0413802],
+                image: "https://www.latribunadetoledo.es/media/IMG/2019/7BFDF29D-D31D-1900-7748F02E751ABA32.JPG",
+                rating: "4.6",
+                size: 350,
+                features: ["parking"],
+                createdAt: "2024-05-28T10:45:00Z"
+            },
+        {
+                id: "27",
+                title: "Hotel en el sur de Tenerife",
+                type: "rodaje",
+                description: "Hotel ideal para rodajes costeros",
+                capacity: 20,
+                price: 55,
+                location: "Tenerife, España",
+                coordinates: [28.0319, -16.5639],
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+                rating: "4.7",
+                size: 350,
+                features: ["parking"],
+                createdAt: "2024-05-28T10:45:00Z"
+            },
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Selector de idioma
+        document.querySelectorAll('.lang-option').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelector('.lang-option.active').classList.remove('active');
+                    button.classList.add('active');
+                    console.log('Idioma cambiado a:', button.dataset.lang);
+        // Aquí iría la lógica de traducción completa
+                });
+            });
+        // Nueva versión que prioriza los ejemplos actualizados
+        const STORAGE_KEY = 'ubikalia-spaces';
+        const APP_VERSION = '1.0.7'; // Incrementa esto con cada cambio
+
+        // Borrar caché antigua si la versión cambia
+        if (localStorage.getItem('app-version') !== APP_VERSION) {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.setItem('app-version', APP_VERSION);
+        }
+
+        // Cargar datos: priorizar ejemplos actualizados durante desarrollo
+        let savedSpaces = localStorage.getItem(STORAGE_KEY)
+                            ? JSON.parse(localStorage.getItem(STORAGE_KEY))
+                            : sampleSpaces;
+
+        // Siempre mezclar nuevos espacios con existentes
+        const existingIds = new Set(savedSpaces.map(s => s.id));
+        const newSpaces = sampleSpaces.filter(s => !existingIds.has(s.id));
+        savedSpaces = [...newSpaces, ...savedSpaces];
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedSpaces));
+        
+        let currentSpaces = [...savedSpaces];
+        
+        // Inicializar mapa
+        const map = L.map('resultsMap').setView([40.4168, -3.7038], 6);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Icono personalizado
+        const spaceIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+        
+        // Función para renderizar espacios en mapa y listado
+        function renderSpaces(spaces) {
+            
+            // Limpiar mapa y listado
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) map.removeLayer(layer);
+            });
+            document.getElementById('spacesResults').innerHTML = '';
+            
+            if (spaces.length === 0) {
+                document.getElementById('spacesResults').innerHTML = `
+                    <div class="no-results">
+                        <h4>No se encontraron espacios</h4>
+                        <p>Prueba ajustando tus filtros de búsqueda</p>
+                    </div>
+                `;
+                document.getElementById('resultsCount').textContent = '0 espacios encontrados';
+                return;
+            }
+            
+            // Añadir marcadores al mapa
+            spaces.forEach(space => {
+                const marker = L.marker(space.coordinates, { icon: spaceIcon }).addTo(map);
+                
+                const popupContent = `
+                    <div class="map-popup">
+                        <div class="popup-image" style="background-image: url('${space.image}')"></div>
+                        <div class="popup-content">
+                            <h5 class="popup-title">${space.title}</h5>
+                            <p class="popup-price">${space.price}€/hora</p>
+                            <a href="#" onclick="viewSpaceDetail('${space.id}')" class="popup-link">Ver detalles</a>
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+            });
+            
+            // Ajustar vista del mapa para mostrar todos los marcadores
+            if (spaces.length > 0) {
+                const group = new L.featureGroup(spaces.map(s => L.marker(s.coordinates)));
+                map.fitBounds(group.getBounds().pad(0.2));
+            }
+            
+            // Renderizar cards
+            spaces.forEach(space => {
+                const card = document.createElement('div');
+                card.className = 'space-card';
+                card.innerHTML = `
+                    <div class="space-image" style="background-image: url('${space.image}')">
+                        <span class="space-price">${space.price}€/h</span>
+                    </div>
+                    <div class="space-details">
+                        <h4 class="space-title">${space.title}</h4>
+                        <p class="space-location">
+                            <i class="fas fa-map-marker-alt"></i> ${space.location}
+                        </p>
+                        <div class="space-features">
+                            <span class="feature">
+                                <i class="fas fa-users"></i> ${space.capacity} pers.
+                            </span>
+                            <span class="feature">
+                                <i class="fas fa-ruler-combined"></i> ${space.size}m²
+                            </span>
+                            <span class="feature">
+                                <i class="fas fa-star"></i> ${space.rating}
+                            </span>
+                        </div>
+                        <a href="#" onclick="viewSpaceDetail('${space.id}')" class="view-space">Ver espacio</a>
+                    </div>
+                `;
+                document.getElementById('spacesResults').appendChild(card);
+            });
+            
+            document.getElementById('resultsCount').textContent = `${spaces.length} espacio${spaces.length !== 1 ? 's' : ''} encontrado${spaces.length !== 1 ? 's' : ''}`;
+        }
+        
+        // Función para filtrar espacios
+        function filterSpaces() {
+                // Obtener siempre datos frescos de localStorage
+            const allSpaces = JSON.parse(localStorage.getItem('ubikalia-spaces')) || [];
+    
+            // Resto de la lógica de filtrado usando allSpaces en vez de savedSpaces
+            
+            
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            const locationQuery = document.getElementById('searchLocation').value.toLowerCase();
+            const selectedTypes = Array.from(document.querySelectorAll('.filter-options input[type="checkbox"][id^="type-"]:checked')).map(cb => cb.id.replace('type-', ''));
+            
+            let filtered = [...allSpaces];
+            
+            // Filtrar por precio
+            filtered = filtered.filter(space => space.price <= maxPrice);
+            
+            // Filtrar por tipo
+            if (selectedTypes.length > 0) {
+                    filtered = filtered.filter(space => {
+                        const spaceTypes = Array.isArray(space.type) ? space.type : [space.type];
+                        return spaceTypes.some(t => selectedTypes.includes(t));
+                    });
+                }
+            
+            // Filtrar por ubicación (búsqueda simple)
+            if (locationQuery) {
+                filtered = filtered.filter(space => 
+                    space.location.toLowerCase().includes(locationQuery)
+                );
+            }
+            
+            // Filtrar por características
+            const featuresFilter = Array.from(document.querySelectorAll('.filter-options input[type="checkbox"][id^="feature-"]:checked'))
+                .map(cb => cb.id.replace('feature-', ''));
+            
+            if (featuresFilter.length > 0) {
+                filtered = filtered.filter(space => 
+                    featuresFilter.every(feat => space.features.includes(feat))
+                );
+            }
+            
+            // Filtrar por capacidad
+            const capacityFilter = Array.from(document.querySelectorAll('.filter-options input[type="checkbox"][id^="capacity-"]:checked'))
+                .map(cb => {
+                    const range = cb.id.replace('capacity-', '');
+                    if (range === '1') return [1, 10];
+                    if (range === '2') return [11, 30];
+                    if (range === '3') return [31, 50];
+                    return [51, Infinity];
+                });
+            
+            if (capacityFilter.length > 0) {
+                filtered = filtered.filter(space => 
+                    capacityFilter.some(([min, max]) => 
+                        space.capacity >= min && space.capacity <= max
+                    )
+                );
+            }
+            
+            // Ordenar resultados
+            const sortBy = document.getElementById('sortBy').value;
+            switch(sortBy) {
+                case 'price-asc':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'capacity':
+                    filtered.sort((a, b) => b.capacity - a.capacity);
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+                default:
+                    // "Recomendados" - ordenar por más recientes
+                    filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            // Actualizar variable global
+            currentSpaces = filtered;
+            renderSpaces(currentSpaces);
+            }
+            
+            currentSpaces = filtered;
+            renderSpaces(filtered);
+            updateActiveFilters();
+        }
+        
+        // 4. Función para forzar actualización de datos
+        window.forceReloadSpaces = function() {
+            localStorage.setItem('ubikalia-spaces', JSON.stringify(sampleSpaces));
+            location.reload();
+        };
+        
+        // Actualizar filtros activos
+        function updateActiveFilters() {
+            const container = document.getElementById('activeFilters');
+            container.innerHTML = '';
+            
+            // Precio
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            if (maxPrice < 500) {
+                const tag = document.createElement('div');
+                tag.className = 'filter-tag';
+                tag.innerHTML = `
+                    Precio hasta ${maxPrice}€
+                    <button onclick="resetFilter('price')">&times;</button>
+                `;
+                container.appendChild(tag);
+            }
+            
+            // Tipo
+            document.querySelectorAll('.filter-options input[type="checkbox"][id^="type-"]:checked').forEach(cb => {
+                const label = document.querySelector(`label[for="${cb.id}"]`).textContent;
+                const tag = document.createElement('div');
+                tag.className = 'filter-tag';
+                tag.innerHTML = `
+                    ${label}
+                    <button onclick="resetFilter('${cb.id}')">&times;</button>
+                `;
+                container.appendChild(tag);
+            });
+        }
+        
+        // Función global para resetear filtros
+        window.resetFilter = function(filterId) {
+            if (filterId === 'price') {
+                document.getElementById('priceRange').value = 500;
+            } else {
+                document.getElementById(filterId).checked = false;
+            }
+            filterSpaces();
+        };
+        
+        // Función global para ver detalles
+        window.viewSpaceDetail = function(spaceId) {
+            const space = currentSpaces.find(s => s.id === spaceId);
+            if (space) {
+                alert(`Detalles de: ${space.title}\n\n` +
+                      `Ubicación: ${space.location}\n` +
+                      `Tipo: ${getTypeName(space.type)}\n` +
+                      `Precio: ${space.price}€/h\n` +
+                      `Capacidad: ${space.capacity} personas\n` +
+                      `Tamaño: ${space.size}m²\n` +
+                      `Valoración: ${space.rating}/5\n` +
+                      `Características: ${space.features.map(f => getFeatureName(f)).join(', ')}\n\n` +
+                      `${space.description}`);
+            }
+            return false;
+        };
+
+        window.viewSpaceDetail = function(spaceId) {
+            const space = currentSpaces.find(s => s.id === spaceId);
+            if (!space) return false;
+            
+            // Configurar el modal con los datos del espacio
+            document.getElementById('modalTitle').textContent = space.title;
+            document.getElementById('modalLocation').textContent = space.location;
+            document.getElementById('modalPrice').textContent = `${space.price}€ por hora`;
+            document.getElementById('modalDescription').textContent = space.description;
+            
+            // Establecer imagen principal
+            document.getElementById('modalHeader').style.backgroundImage = `url('${space.image}')`;
+            
+            // Mostrar características
+            const featuresContainer = document.getElementById('modalFeatures');
+            featuresContainer.innerHTML = '';
+            
+            const featureIcons = {
+                'wifi': 'fa-wifi',
+                'parking': 'fa-parking',
+                'kitchen': 'fa-utensils',
+                'ac': 'fa-snowflake',
+                'projector': 'fa-video',
+                'sound-system': 'fa-volume-up'
+            };
+            
+            space.features.forEach(feature => {
+                const featureElement = document.createElement('div');
+                featureElement.className = 'feature-badge';
+                featureElement.innerHTML = `
+                    <i class="fas ${featureIcons[feature] || 'fa-check'}"></i>
+                    ${getFeatureName(feature)}
+                `;
+                featuresContainer.appendChild(featureElement);
+            });
+            
+            // Configurar galería (usamos la primera imagen como principal y las demás en la galería)
+            const galleryContainer = document.getElementById('modalGallery');
+            galleryContainer.innerHTML = '';
+            
+            // Si hay más fotos, las mostramos en la galería
+            if (space.photos && space.photos.length > 1) {
+                space.photos.slice(1).forEach(photo => {
+                    const thumb = document.createElement('div');
+                    thumb.className = 'gallery-thumb';
+                    thumb.style.backgroundImage = `url('${photo}')`;
+                    thumb.onclick = () => {
+                        document.getElementById('modalHeader').style.backgroundImage = `url('${photo}')`;
+                    };
+                    galleryContainer.appendChild(thumb);
+                });
+            } else {
+                galleryContainer.innerHTML = '<p>No hay más imágenes disponibles</p>';
+            }
+            
+            // Mostrar el modal
+            document.getElementById('spaceModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            return false;
+        };
+
+        // Función para cerrar el modal
+        window.closeModal = function() {
+            document.getElementById('spaceModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        // Cerrar al hacer click fuera del contenido
+        document.getElementById('spaceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // Funciones de ayuda para traducción
+        function getTypeName(type) {
+            const types = {
+                'fiesta': 'Fiesta privada',
+                'corporativo': 'Evento corporativo',
+                'taller': 'Taller/Curso',
+                'rodaje': 'Rodaje audiovisual',
+                'boda': 'Boda/Evento nupcial',
+                'fotos': 'Sesión fotográfica'
+            };
+            return types[type] || type;
+        }
+        
+        function getFeatureName(feature) {
+            const features = {
+                'wifi': 'Wi-Fi',
+                'parking': 'Parking',
+                'kitchen': 'Cocina',
+                'ac': 'Aire acondicionado',
+                'projector': 'Proyector',
+                'sound-system': 'Sistema de sonido'
+            };
+            return features[feature] || feature;
+        }
+        
+        // Event listeners
+        document.getElementById('applyFilters').addEventListener('click', filterSpaces);
+        document.getElementById('sortBy').addEventListener('change', filterSpaces);
+        
+        // Cargar parámetros de URL
+        function loadSearchParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const location = urlParams.get('location');
+            const type = urlParams.get('type');
+            
+            if (location) {
+                document.getElementById('searchLocation').value = location;
+            }
+            
+            if (type) {
+                const checkbox = document.getElementById(`type-${type}`);
+                if (checkbox) checkbox.checked = true;
+            }
+            
+            // Aplicar filtros automáticamente si hay parámetros
+            if (location || type) {
+                filterSpaces();
+            } else {
+                renderSpaces(savedSpaces);
+            }
+        }
+        
+        loadSearchParams();
+    });
+</script>       

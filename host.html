@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ofrece tu Espacio | Ubikalia</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" rel="stylesheet">
+<style>
+    :root {
+        --primary: #19456b;
+        --secondary: #16c79a;
+        --accent: #6fe7c9;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --highlight: #3c7cb9;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Header */
+    header {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+
+    .header-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+    }
+
+    .language-switcher {
+        display: flex;
+        gap: 5px;
+        margin-right: 20px;
+    }
+
+    .lang-option {
+        background: none;
+        border: none;
+        color: var(--primary);
+        font-weight: 500;
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 4px;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+
+    .lang-option.active {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+    }
+
+    .logo img {
+        height: 40px;
+        width: auto;
+        margin-right: 10px;
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+        gap: 25px;
+    }
+
+    nav ul li a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: color 0.3s;
+        font-size: 1rem;
+    }
+
+    nav ul li a:hover {
+        color: var(--secondary);
+    }
+
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-outline {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        background: transparent;
+    }
+
+    .btn-outline:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: var(--highlight);
+        color: white;
+        border: 2px solid var(--highlight);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+        .host-hero {
+            background: linear-gradient(rgba(25, 69, 107, 0.8), rgba(25, 69, 107, 0.8)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 150px 0 80px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .host-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .host-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .host-form {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(22, 199, 154, 0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .map-container {
+            display: none;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+        }
+        
+        #map {
+            height: 250px;
+            width: 100%;
+        }
+
+        .location-search {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .location-search input {
+            flex: 1;
+        }
+
+        .photo-upload {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .photo-preview {
+            height: 120px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+        
+        .delete-photo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent);
+        }
+
+        .footer-social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .footer-social-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-main {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                margin: 20px 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .host-hero {
+                padding: 120px 0 60px;
+            }
+
+            .host-hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</link><link href="styles.css" rel="stylesheet"/></head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="language-switcher">
+                    <button class="lang-option active" data-lang="es">ES</button>
+                    <button class="lang-option" data-lang="en">EN</button>
+                </div>
+                <div class="auth-buttons">
+                    <a href="#" class="btn btn-outline">Iniciar sesión</a>
+                    <a href="#" class="btn btn-primary">Registrarse</a>
+                </div>
+            </div>
+            <div class="header-main">
+                <a href="index.html" class="logo">
+                    <img src="images/ubikalia_logo.png" alt="Ubikalia" class="logo-img">
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="search.html">Ubica tu espacio</a></li>
+                        <li><a href="host.html">Ofrece tu espacio</a></li>
+                        <li><a href="about.html">Sobre nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+<section class="host-hero">
+<div class="container">
+<h1>Convierte tu espacio en ingresos</h1>
+<p>Gana dinero alquilando tu espacio para eventos</p>
+</div>
+</section>
+<section class="container">
+<div class="host-form">
+<h2>Publica tu espacio</h2>
+<form id="spaceForm">
+<div class="form-grid">
+<div class="form-group">
+<label for="space-name">Nombre del espacio *</label>
+<input id="space-name" placeholder="Ej: Loft moderno en Malasaña" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="space-type">Tipo de evento *</label>
+<select id="space-type" required="">
+<option value="">Selecciona categoría...</option>
+<option value="fiesta">Fiesta privada</option>
+<option value="corporativo">Evento corporativo</option>
+<option value="taller">Taller/Curso</option>
+<option value="rodaje">Rodaje audiovisual</option>
+<option value="boda">Boda/Evento nupcial</option>
+<option value="fotos">Sesión fotográfica</option>
+</select>
+</div>
+</div>
+<div class="form-group">
+<label for="space-description">Descripción *</label>
+<textarea id="space-description" placeholder="Describe tu espacio, características y normas de uso..." required=""></textarea>
+</div>
+<div class="form-grid">
+<div class="form-group">
+<label for="capacity">Capacidad (personas) *</label>
+<input id="capacity" min="1" placeholder="Ej: 30" required="" type="number"/>
+</div>
+<div class="form-group">
+<label for="price-hour">Precio por hora (€) *</label>
+<input id="price-hour" min="1" placeholder="Ej: 50" required="" type="number"/>
+</div>
+</div>
+<div class="form-group">
+<label>Ubicación *</label>
+<div class="location-search">
+<input id="location-input" placeholder="Ej: Calle Gran Vía, Madrid" required="" type="text"/>
+<button class="btn btn-outline" id="search-location" type="button">Buscar</button>
+</div>
+<div class="map-container" id="map-container">
+<div id="map"></div>
+<small>Marca la ubicación exacta en el mapa</small>
+<input id="latitude" required="" type="hidden"/>
+<input id="longitude" required="" type="hidden"/>
+</div>
+</div>
+<div class="form-group">
+<label>Fotos del espacio * (Mínimo 2)</label>
+<input accept="image/*" id="photo-upload" multiple="" type="file"/>
+<button class="btn btn-outline" onclick="document.getElementById('photo-upload').click()" type="button">
+<i class="fas fa-camera"></i> Seleccionar fotos
+                    </button>
+<div class="photo-upload" id="photo-preview-container"></div>
+</div>
+<div class="form-footer">
+<button class="btn btn-primary" type="submit">Publicar espacio</button>
+</div>
+</form>
+</div>
+</section>
+<footer>
+<div class="container">
+<div class="footer-grid">
+<div class="footer-col">
+<h4>Ubikalia</h4>
+<p>Un espacio para tus ideas</p>
+</div>
+<div class="footer-col">
+<h4>Enlaces</h4>
+<ul>
+<li><a href="about.html">Sobre nosotros</a></li>
+<li><a href="search.html">Ubica tu espacio</a></li>
+<li><a href="host.html">Ofrece tu espacio</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Legal</h4>
+<ul>
+<li><a href="#">Términos y condiciones</a></li>
+<li><a href="#">Política de privacidad</a></li>
+<li><a href="#">Cookies</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4>Síguenos</h4>
+<div class="footer-social-links">
+<a aria-label="Instagram" href="#"><i class="fab fa-instagram"></i></a>
+<a aria-label="Facebook" href="#"><i class="fab fa-facebook"></i></a>
+<a aria-label="Twitter" href="#"><i class="fab fa-twitter"></i></a>
+<a aria-label="LinkedIn" href="#"><i class="fab fa-linkedin"></i></a>
+</div>
+</div>
+</div>
+<div class="copyright">
+<p>© 2025 Ubikalia. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-geosearch@3.1.0/dist/geosearch.umd.js"></script>
+<script>
+        // Mapa y búsqueda
+        const map = L.map('map');
+        const provider = new GeoSearch.OpenStreetMapProvider();
+        let marker;
+        
+        // Buscar ubicación
+        document.getElementById('search-location').addEventListener('click', async () => {
+            const input = document.getElementById('location-input').value.trim();
+            if (!input) {
+                alert('Por favor ingresa una ubicación');
+                return;
+            }
+            
+            try {
+                const results = await provider.search({ query: input });
+                if (results.length > 0) {
+                    const { x: lng, y: lat, label } = results[0];
+                    
+                    if (!map._size) {
+                        map.setView([lat, lng], 16);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}/.png').addTo(map);
+                    } else {
+                        map.setView([lat, lng], 16);
+                    }
+                    
+                    if (marker) map.removeLayer(marker);
+                    marker = L.marker([lat, lng]).addTo(map)
+                        .bindPopup(label)
+                        .openPopup();
+                    
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = lng;
+                    document.getElementById('map-container').style.display = 'block';
+                } else {
+                    alert('Ubicación no encontrada. Intenta con una dirección más específica.');
+                }
+            } catch (error) {
+                alert('Error al buscar la ubicación. Intenta nuevamente.');
+                console.error(error);
+            }
+        });
+        
+        // Click en el mapa para ajustar ubicación
+        map.on('click', (e) => {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+        });
+
+        // Subida de fotos
+        const photoUpload = document.getElementById('photo-upload');
+        const previewContainer = document.getElementById('photo-preview-container');
+        let uploadedPhotos = [];
+        
+        photoUpload.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            uploadedPhotos = [];
+            
+            if (files.length < 2) {
+                alert('Debes seleccionar al menos 2 fotos');
+                return;
+            }
+            
+            if (files.length > 10) {
+                alert('Máximo 10 fotos. Se seleccionarán las primeras 10.');
+            }
+            
+            files.slice(0, 10).forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+                
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedPhotos.push(event.target.result);
+                    renderPhotos();
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        function renderPhotos() {
+            previewContainer.innerHTML = '';
+            uploadedPhotos.forEach((photo, index) => {
+                const div = document.createElement('div');
+                div.className = 'photo-preview';
+                div.innerHTML = `
+                    <img src="${photo}" alt="Previsualización">
+                    <button class="delete-photo" onclick="removePhoto(${index})">&times;</button>
+                `;
+                previewContainer.appendChild(div);
+            });
+        }
+
+        window.removePhoto = function(index) {
+            uploadedPhotos.splice(index, 1);
+            renderPhotos();
+        }
+
+        // Validación del formulario
+        document.getElementById('spaceForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (uploadedPhotos.length < 2) {
+                alert('Debes subir al menos 2 fotos del espacio');
+                return;
+            }
+            
+            if (!document.getElementById('latitude').value) {
+                alert('Debes seleccionar una ubicación en el mapa');
+                return;
+            }
+            
+            // Crear objeto del espacio con más detalles para el buscador
+            const spaceData = {
+                id: Date.now().toString(),
+                title: document.getElementById('space-name').value,
+                type: document.getElementById('space-type').value,
+                description: document.getElementById('space-description').value,
+                capacity: parseInt(document.getElementById('capacity').value),
+                price: parseInt(document.getElementById('price-hour').value),
+                location: document.getElementById('location-input').value,
+                coordinates: [
+                    parseFloat(document.getElementById('latitude').value),
+                    parseFloat(document.getElementById('longitude').value)
+                ],
+                image: uploadedPhotos[0],
+                photos: uploadedPhotos,
+                rating: (4 + Math.random()).toFixed(1),
+                size: Math.floor(Math.random() * 200) + 50,
+                features: getRandomFeatures(),
+                createdAt: new Date().toISOString()
+            };
+            
+            // Guardar en localStorage
+            const spaces = JSON.parse(localStorage.getItem('ubikalia-spaces') || '[]');
+            spaces.push(spaceData);
+            localStorage.setItem('ubikalia-spaces', JSON.stringify(spaces));
+            
+            alert('¡Espacio publicado con éxito!');
+            window.location.href = 'search.html';
+        });
+
+        // Función de ayuda para características aleatorias (simulación)
+        function getRandomFeatures() {
+            const allFeatures = ['wifi', 'parking', 'kitchen', 'ac', 'projector', 'sound-system'];
+            const numFeatures = Math.floor(Math.random() * 3) + 2;
+            const shuffled = allFeatures.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, numFeatures);
+        }
+    </script>
+</body>
+</html>
